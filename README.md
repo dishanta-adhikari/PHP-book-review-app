@@ -23,7 +23,7 @@ A simple PHP-based Book Review System where users can register, log in, and post
 
 ## 🛠️ Tech Stack
 
-- **Backend**: PHP (Procedural)
+- **Backend**: PHP
 - **Database**: MySQL
 - **Frontend**: HTML, CSS, Bootstrap
 - **Authentication**: Session-based login
