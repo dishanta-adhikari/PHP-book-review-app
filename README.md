@@ -94,3 +94,4 @@ This project is for educational and demo purposes. Feel free to use and modify i
 ## 💡 Contributing
 
 If you'd like to contribute, feel free to fork the repo and submit a pull request or open an issue with suggestions.
+# book-review-app
