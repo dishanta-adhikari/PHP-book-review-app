@@ -7,7 +7,7 @@ abstract class DB
     protected $user = "root";
     protected $password = "";
     protected $database = "BRS_db";
-    public $conn;
+    protected $conn;
 
 
     public function connect()
