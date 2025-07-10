@@ -1,4 +1,6 @@
-<?php require __DIR__ . "/../../config/url.php"; ?>
+<?php
+require_once __DIR__ . "/../../_init_.php";
+?>
 
 <!doctype html>
 <html lang="en">
@@ -18,7 +20,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
             <div class="container-fluid px-3 px-md-5">
 
-                
+
                 <a class="navbar-brand mb-0 fs-3 fw-bold" href="<?php echo APP_URL; ?>">
                     Books Review System
                 </a>
@@ -39,8 +41,8 @@
                         <?php elseif (isset($_SESSION['user_id'])): ?>
                             <a href="<?php echo AUTH_URL; ?>/Logout" class="btn btn-danger btn-sm">Log Out</a>
                         <?php else: ?>
-                            <a href="<?php echo AUTH_URL; ?>/User/Login" class="btn btn-light btn-sm">Log In</a>
-                            <a href="<?php echo AUTH_URL; ?>/User/Register" class="btn btn-outline-light btn-sm">Register</a>
+                            <a href="<?= AUTH_URL ?>/user/login" class="btn btn-light btn-sm">Log In</a>
+                            <a href="<?= AUTH_URL ?>/user/register" class="btn btn-outline-light btn-sm">Register</a>
                         <?php endif; ?>
 
                     </div>

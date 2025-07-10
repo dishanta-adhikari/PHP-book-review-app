@@ -1,4 +1,3 @@
-<?php require __DIR__ . "/../../config/url.php"; ?>
 <!doctype html>
 <html lang="en">
 

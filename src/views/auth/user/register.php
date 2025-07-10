@@ -1,10 +1,5 @@
 <?php
-require __DIR__ . "/../../../App/app.php";
-require __DIR__ . "/../../../config/url.php";
-
-$app = new App();
-$conn = $app->conn;
-session_start();
+require_once __DIR__."/../../../_init_.php";
 
 if (isset($_SESSION['user_id']) || isset($_SESSION['author_id'])) {
     header("Location:" . APP_URL . " /views/User/dashboard"); // Change this to your dashboard path

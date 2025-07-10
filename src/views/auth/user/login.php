@@ -1,10 +1,5 @@
 <?php
-require __DIR__ . "/../../../App/app.php";
-require __DIR__ . "/../../../config/url.php";
-
-$app = new App();
-$conn = $app->conn;
-session_start();
+require_once __DIR__."/../../../_init_.php";
 
 // Redirect users and authors to their respective dashboards
 if (isset($_SESSION['user_id'])) {
@@ -23,7 +18,7 @@ if (isset($_SESSION['author_id'])) {
     <main class="container my-5">
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-8 col-sm-10">
-                <div class="card shadow-sm border rounded p-4">
+                <div class="card shadow border rounded p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="mb-0">Log In</h2>
                         <a href="<?php echo AUTH_URL; ?>/Author/Login"
