@@ -1,49 +1,30 @@
 <?php
-
 require_once __DIR__ . "/../views/Components/layout.php";
 
-if (isset($_SESSION['author_id'])) {
-    header("Location: " . APP_URL . "/views/Author/dashboard");
-    exit();
+use App\Middleware\SessionMiddleware;
+use App\Controllers\ReviewController;
+use App\Helpers\Flash;
+
+SessionMiddleware::verifySession('user');       //verify the user , it is a static(state-less) method call
+SessionMiddleware::verifySession('author');     //verify the author , it is a static(state-less) method call
+
+$review = new ReviewController($conn);
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $review->create($_POST);
 }
-if (isset($_SESSION['user_id'])) {
-    header("Location: " . APP_URL . "/views/User/dashboard");
-    exit();
-}
+
 
 $limit = 6; // books per page
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
-
-$showSuccessModal = false;
-
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["book_id"])) {
-    $book_id = $_POST["book_id"];
-    $user_name = $_POST["user_name"];
-    $rating = $_POST["rating"];
-    $comment = $_POST["comment"];
-
-    $stmt = $conn->prepare("INSERT INTO reviews (book_id, user_name, rating, comment) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("isis", $book_id, $user_name, $rating, $comment);
-
-    if ($stmt->execute()) {
-        $stmt->close();
-        header("Location: " . $_SERVER['PHP_SELF'] . "?review_submitted=1");
-        exit();
-    }
-    $stmt->close();
-}
-
-if (isset($_GET['review_submitted'])) {
-    $showSuccessModal = true;
-}
-
-
 ?>
 
-
-
 <main class="container my-5">
+
+    <?php Flash::render();  ?> <!-- this static method call, renders the session (success,fail) messages -->
+
+
     <div class="row">
         <?php
         $sql = "SELECT books.id, books.name AS book_name, books.vol, books.img, authors.name AS author_name, books.pdf
@@ -192,15 +173,6 @@ if (isset($_GET['review_submitted'])) {
         </div>
     </div>
 </div>
-
-<?php if ($showSuccessModal): ?>
-    <script>
-        var successModal = new bootstrap.Modal(document.getElementById('reviewSuccessModal'));
-        window.addEventListener('load', function() {
-            successModal.show();
-        });
-    </script>
-<?php endif; ?>
 </body>
 
 </html>

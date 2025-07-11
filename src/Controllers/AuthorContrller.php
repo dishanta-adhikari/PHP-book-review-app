@@ -13,4 +13,12 @@ class AuthorController
     {
         $this->Author = new Author($db);
     }
+
+    public function verifyAuthor()
+    {
+        if (isset($_SESSION['author_id'])) {
+            header("Location: " . APP_URL . "/src/views/author/dashboard");
+            exit;
+        }
+    }
 }

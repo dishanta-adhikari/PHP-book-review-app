@@ -1,20 +1,11 @@
 <?php
-require __DIR__ . "/../../App/app.php";
-require __DIR__ . "/../../config/url.php";
+require_once __DIR__ . "/../Components/layout.php";
 
-$app = new App();
-$conn = $app->conn;
-session_start();
+use App\Helpers\Flash;
+use App\Middleware\SessionMiddleware;
 
-if (!isset($_SESSION['user_name'])) {
-    header("Location: " . AUTH_URL . "/User/Login");
-    exit();
-}
+SessionMiddleware::validateLoggedInSession('user');
 
-if (isset($_SESSION['login_success'])) {
-    echo "<div class='alert alert-success text-center'>" . $_SESSION['login_success'] . "</div>";
-    unset($_SESSION['login_success']); // show once
-}
 
 // Pagination setup
 $limit = 6;
@@ -41,30 +32,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["book_id"])) {
     $stmt->close();
 }
 
-if (isset($_GET['review_submitted'])) {
-    $showSuccessModal = true;
-}
 
 ?>
 
-<?php require __DIR__ . "/../Components/layout.php"; ?>
+
 
 <!-- Welcome message below nav header -->
-<?php if (isset($_SESSION['user_name'])): ?>
-    <div class="container mt-3">
-        <div class="alert alert-info text-center mb-4">
-            Welcome, <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
-        </div>
-    </div>
-<?php endif; ?>
+<?php Flash::render(); ?>
 
 <main class="container my-4">
     <div class="row">
         <?php
-        
-        $books = $app->getBooksWithAuthors($limit, $offset);
 
-        
+        // $books = $app->getBooksWithAuthors($limit, $offset);
+
+
         if ($books && $books->num_rows > 0) {
             while ($row = $books->fetch_assoc()) {
                 $book_id = $row["id"];

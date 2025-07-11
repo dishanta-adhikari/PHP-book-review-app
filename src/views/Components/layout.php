@@ -36,10 +36,10 @@ require_once __DIR__ . "/../../_init_.php";
                     <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2">
 
                         <?php if (isset($_SESSION['author_id'])): ?>
-                            <a href="<?php echo APP_URL; ?>/views/Author/new-book" class="btn btn-primary btn-sm">New Book</a>
-                            <a href="<?php echo AUTH_URL; ?>/Logout" class="btn btn-danger btn-sm">Log Out</a>
+                            <a href="<?= APP_URL ?>/views/Author/new-book" class="btn btn-primary btn-sm">New Book</a>
+                            <a href="<?= AUTH_URL ?>/logout" class="btn btn-danger btn-sm">Log Out</a>
                         <?php elseif (isset($_SESSION['user_id'])): ?>
-                            <a href="<?php echo AUTH_URL; ?>/Logout" class="btn btn-danger btn-sm">Log Out</a>
+                            <a href="<?= AUTH_URL ?>/logout" class="btn btn-danger btn-sm">Log Out</a>
                         <?php else: ?>
                             <a href="<?= AUTH_URL ?>/user/login" class="btn btn-light btn-sm">Log In</a>
                             <a href="<?= AUTH_URL ?>/user/register" class="btn btn-outline-light btn-sm">Register</a>

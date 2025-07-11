@@ -1,23 +1,11 @@
 <?php
-require __DIR__ . "/../../App/app.php";
-require __DIR__ . "/../../config/url.php";
+require_once __DIR__ . "/../Components/layout.php";
 
-$app = new App();
-$conn = $app->conn;
-session_start();
+use App\Middleware\SessionMiddleware;
+use App\Helpers\Flash;
 
-if (!isset($_SESSION['author_id'])) {
-    header("Location: " . AUTH_URL . "/Author/Login");
-    exit();
-}
+SessionMiddleware::validateLoggedInSession('author');
 
-if (isset($_SESSION['login_success'])) {
-    echo "<div class='alert alert-success text-center'>" . $_SESSION['login_success'] . "</div>";
-    unset($_SESSION['login_success']); // show once
-}
-
-$author_id = (int)$_SESSION['author_id'];
-$alert = "";
 
 // Handle Delete Request using App class
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_book_id'])) {
@@ -47,26 +35,20 @@ $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] :
 $offset = ($page - 1) * $limit;
 
 // Fetch books using App class with pagination
-$books = $app->getBooksByAuthor($author_id, $limit, $offset);
+// $books = $app->getBooksByAuthor($author_id, $limit, $offset);
 
 // For total books count (for pagination)
-$total_books = $app->getBooksCountByAuthor($author_id);
-$total_pages = ceil($total_books / $limit);
+// $total_books = $app->getBooksCountByAuthor($author_id);
+// $total_pages = ceil($total_books / $limit);
 
 // Get author name for welcome message
 $author_name = isset($_SESSION['author_name']) ? $_SESSION['author_name'] : '';
 ?>
 
-<?php require __DIR__ . "/../Components/layout.php"; ?>
 
-<!-- Welcome message below nav header -->
-<?php if ($author_name): ?>
-    <div class="container mt-3">
-        <div class="alert alert-info text-center mb-4">
-            Welcome, <strong><?php echo htmlspecialchars($author_name); ?></strong>!
-        </div>
-    </div>
-<?php endif; ?>
+
+
+<?php Flash::render(); ?> <!-- Welcome message  -->
 
 <main class="container my-4">
     <?php echo $alert; ?>
@@ -170,4 +152,5 @@ $author_name = isset($_SESSION['author_name']) ? $_SESSION['author_name'] : '';
 
 <?php require __DIR__ . "/../Components/footer.php"; ?>
 </body>
+
 </html>
