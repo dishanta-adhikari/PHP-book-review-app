@@ -1,4 +1,4 @@
-# UNDER DEVELOPMENT# Book Review System
+# Book Review System
 
 A robust book review platform developed using PHP, MySQL, and Bootstrap. Tailored for book authors and readers, it streamlines book publishing, browsing, and reviewing. The system includes secure authentication, role-based dashboards, protected book submission, and a responsive user interface.
 
