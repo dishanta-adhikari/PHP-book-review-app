@@ -11,6 +11,24 @@ class User
         $this->conn = $db;
     }
 
+    public function create(array $values)    //$name, $email, $phone, $address, $password
+    {
+        $stmt = $this->conn->prepare("
+            INSERT INTO users (name, email, phone, address, password, created_at) 
+            VALUES (?, ?, ?, ?, ?, NOW())
+        ");
+        $stmt->bind_param("ssiss", $values['name'], $values['email'], $values['phone'], $values['address'], $values['password']);
+        if ($stmt->execute()) {
+            $id = $this->conn->insert_id;
+            return [
+                'id' => $id,
+                'name' => $values['name'],
+                'email' => $values['email']
+            ];
+        }
+        return false;
+    }
+
     public function getUserByEmail(string $email)
     {
         $stmt = $this->conn->prepare("SELECT id,name,password FROM users WHERE email = ?");

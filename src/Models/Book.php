@@ -23,17 +23,17 @@ class Book
         return false;
     }
 
-    public function getBookById($id)
+    public function getBookById(int $id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM books WHERE id = ?");
         $stmt->bind_param("i", $id);
         if ($stmt->execute()) {
-            return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+            return $stmt->get_result()->fetch_assoc();
         }
         return false;
     }
 
-    public function getBooksByAuthorId($author_id)
+    public function getBooksByAuthorId(int $author_id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM books WHERE author_id = ?");
         $stmt->bind_param("i", $author_id);
@@ -43,8 +43,9 @@ class Book
         return false;
     }
 
-    public function getBooksWithAuthors($limit, $offset)
+    public function getBooksWithAuthors(int $offset)  // $offset
     {
+        $limit = 6;
         $stmt = $this->conn->prepare("SELECT books.*, authors.name AS author_name 
                 FROM books 
                 LEFT JOIN authors ON books.author_id = authors.id 
@@ -52,7 +53,22 @@ class Book
                 LIMIT ? OFFSET ?");
         $stmt->bind_param("ii", $limit, $offset);
         if ($stmt->execute()) {
-            return $stmt->get_result();
+            return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        }
+        return false;
+    }
+
+    public function getAllBooks(int $value)
+    {
+        $limit = 6;
+        $stmt = $this->conn->prepare("SELECT books.id, books.name AS book_name, books.vol, books.img, books.pdf, authors.name AS author_name
+            FROM books
+            JOIN authors ON books.author_id = authors.id
+            ORDER BY books.created_at DESC
+            LIMIT ? OFFSET ?");
+        $stmt->bind_param('ii', $limit, $value);
+        if ($stmt->execute()) {
+            return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
         return false;
     }
@@ -94,14 +110,30 @@ class Book
         $params[] = $id;
         $types .= "i";
 
-        $sql = "UPDATE books SET " . implode(", ", $fields) . " WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $this->conn->prepare("UPDATE books SET " . implode(", ", $fields) . " WHERE id = ?");
         $stmt->bind_param($types, ...$params);
-
         if ($stmt->execute()) {
             return true;
         }
         return false;
+    }
+
+    public function verifyOwner($book_id, $author_id)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM books WHERE id = ? AND author_id = ? ");
+        $stmt->bind_param("ii", $book_id, $author_id);
+        if ($stmt->execute()) {
+            return $stmt->get_result();
+        }
+        return false;
+    }
+
+    public function totalPages($limit)
+    {
+        $total_books_result = $this->conn->query("SELECT COUNT(*) AS total FROM books");
+        $total_books = ($total_books_result) ? $total_books_result->fetch_assoc()['total'] : 0;
+        $total_pages = ceil($total_books / $limit);
+        return $total_pages;
     }
 
     public function delete($id)

@@ -15,7 +15,10 @@ class Review
 
     public function create(array $values)
     {
-        $stmt = $this->conn->prepare("INSERT INTO reviews (book_id, user_name, rating, comment) VALUES (?, ?, ?, ?)");
+        $stmt = $this->conn->prepare(
+            "INSERT INTO reviews (book_id, user_name, rating, comment) 
+            VALUES (?, ?, ?, ?)"
+        );
         $stmt->bind_param("isis", $values['book_id'], $values['user_name'], $values['rating'], $values['comment']);
         if ($stmt->execute()) {
             return true;
@@ -23,13 +26,14 @@ class Review
         return false;
     }
 
-    public function getRecentReviewsByBookId(array $values) //$book_id, $limit
+
+    public function getRecentReviewsByBookId(int $value) //$book_id
     {
         $limit = 3;
-        $stmt = $this->conn->prepare("SELECT user_name, rating, comment FROM reviews WHERE book_id = ? ORDER BY id DESC LIMIT ?");
-        $stmt->bind_param("ii", $values['book_id'], $limit);
+        $stmt = $this->conn->prepare("SELECT * FROM reviews WHERE book_id = ? ORDER BY id DESC LIMIT ?");
+        $stmt->bind_param("ii", $value, $limit);
         if ($stmt->execute()) {
-            return $stmt->get_result();
+            return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
         return false;
     }

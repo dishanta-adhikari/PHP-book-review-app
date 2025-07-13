@@ -1,37 +1,18 @@
 <?php
+require_once __DIR__ . "/../../Components/layout.php";
 
-require_once __DIR__ . "/../../../_init_.php";
+use App\Middleware\SessionMiddleware;
+use App\Controllers\RegisterController;
+use App\Helpers\Flash;
 
-if (isset($_SESSION['author_id']) || isset($_SESSION['user_id'])) {
-    header("Location: " . APP_URL . "/views/Author/dashboard.php");
-    exit();
-}
-
-$message = "";
+SessionMiddleware::verifySession('author');
+SessionMiddleware::verifySession('user');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name     = $conn->real_escape_string($_POST['name']);
-    $email    = $conn->real_escape_string($_POST['email']);
-    $phone    = (int)$_POST['phone'];
-    $address  = $conn->real_escape_string($_POST['address']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-    $check = $conn->query("SELECT * FROM authors WHERE email='$email'");
-    if ($check->num_rows > 0) {
-        $message = "<div class='alert alert-danger'>Email already registered.</div>";
-    } else {
-        $sql = "INSERT INTO authors (name, email, phone, address, password, created_at)
-                VALUES ('$name', '$email', $phone, '$address', '$password', NOW())";
-        if ($conn->query($sql) === TRUE) {
-            $message = "<div class='alert alert-success'>Registration successful. You can Login Now</div>";
-        } else {
-            $message = "<div class='alert alert-danger'>Error: " . $conn->error . "</div>";
-        }
-    }
+    $register = new RegisterController($conn);
+    $register->register($_POST);
 }
 ?>
-
-<?php require __DIR__ . "/../../Components/layout.php"; ?>
 
 <div class="container my-5">
     <div class="row justify-content-center">
@@ -39,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="card shadow-sm border p-4">
                 <h2 class="mb-4 text-center">Create Account | Author</h2>
 
-                <?php echo $message; ?>
+                <?php Flash::render(); ?>
 
                 <form method="POST">
                     <div class="row g-3">
@@ -63,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <label for="address" class="form-label">Address</label>
                             <textarea name="address" id="address" class="form-control" rows="2" required></textarea>
                         </div>
+                        <input type="hidden" name="role" value="author" class="form-control" required />
                         <div class="col-12 d-flex justify-content-between align-items-center mt-3">
                             <button type="submit" class="btn btn-dark">Submit</button>
                             <a class="icon-link icon-link-hover text-decoration-none" href="<?= AUTH_URL ?>/author/login">
@@ -79,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </div>
 
-<?php require __DIR__ . "/../../Components/footer.php"; ?>
+<?php require_once __DIR__ . "/../../Components/footer.php"; ?>
 </body>
 
 </html>

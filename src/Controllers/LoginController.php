@@ -52,8 +52,8 @@ class LoginController
             $_SESSION[$role . '_id'] = $result['id'];
             $_SESSION['role'] = $role;
 
-            $name = ucfirst($result['name']);
-            $_SESSION['success'] = "Welcome back {$name} !";
+            $_SESSION['user_name'] = ucfirst($result['name']);
+            $_SESSION['success'] = "Welcome back {$_SESSION['user_name']} !";
             header("Location: " . APP_URL . "/src/views/{$role}/dashboard");
             exit;
         } catch (Exception $e) {

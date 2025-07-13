@@ -27,13 +27,25 @@ class ReviewController
                 throw new Exception('Something went wrong. Please try again!');
             }
 
-            $_SESSION['success'] = 'Thank you for your valuable feedback! We appreciate your input and hope you have a wonderful day.';
+            $_SESSION['success'] = 'Thank you for your valuable feedback ! hope you have a wonderful day.';
             header("Location: " . APP_URL);
             exit;
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             header("Location: " . APP_URL);
             exit;
+        }
+    }
+
+    public function getRecentReviewsByBookId(int $values) //$book_id
+    {
+        try {
+            if (empty($values)) {
+                throw new Exception("Invalid Book ID!");
+            }
+            return $this->Review->getRecentReviewsByBookId($values);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
         }
     }
 }
